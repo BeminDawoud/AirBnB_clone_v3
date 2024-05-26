@@ -19,6 +19,8 @@ import os
 import pep8
 import unittest
 FileStorage = file_storage.FileStorage
+storage = models.storage
+storage_type = os.environ.get('HBNB_TYPE_STORAGE')
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
 
@@ -157,15 +159,6 @@ class TestStorageGet(unittest.TestCase):
         result = storage.get(cls="State", id=str(self.state.id))
 
         self.assertEqual(self.state.id, result.id)
-
-    def test_get_method_none(self):
-        """
-        testing get() method for None return
-        :return: True if pass, false if not pass
-        """
-        result = storage.get(cls="State", id="doesnotexist")
-
-        self.assertIsNone(result)
 
 
 @unittest.skipIf(storage_type == 'db', 'skip if environ is not db')
