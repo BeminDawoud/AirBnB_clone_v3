@@ -12,24 +12,21 @@ from models.state import State
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
 def get_state(state_id=None):
     ''' Retrieves the list of all State objects: GET'''
-    if state_id:
-        try:
-            obj = storage.get('State', state_id).to_dict()
-            return jsonify(obj)
-        except Exception:
-            abort(404)
-
+    tmp_obj = []
+    if not state_id:
+        for val in storage.all(State).values():
+            tmp_obj.append(val.to_dict())
+        return jsonify(tmp_obj)
+    item = storage.get(State, state_id)
+    if item:
+        return jsonify(item.to_dict())
     else:
-        objects_list = []
-        objects = storage.all("State")
-        for value in objects.values():
-            objects_list.append(value.to_dict())
-        return jsonify(objects_list)
+        abort(404)
 
 
 @app_views.route("/states/<state_id>", methods=['DELETE'],
                  strict_slashes=False)
-def delete_state(state_id):
+def delete_state(state_id=None):
     ''' Deletes a State object: DELETE '''
     obj = storage.get('State', state_id)
     if obj:
