@@ -68,9 +68,8 @@ def put_state(state_id=None):
         except Exception:
             abort(400, "Not a JSON")
         if data:
-            for key, value in data.items():
-                if (key != "id" and key != "created_at"
-                   and key != "updated_at"):
+            for k, value in data.items():
+                if (k != "id" and k != "created_at" and k != "updated_at"):
                     setattr(obj, key, value)
 
             obj.save()
