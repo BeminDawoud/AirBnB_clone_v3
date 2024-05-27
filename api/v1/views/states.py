@@ -55,8 +55,10 @@ def post_state():
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
-def put_state(state_id):
+def put_state(state_id=None):
     ''' adds a new State object: POST '''
+    if not state_id:
+        abort(404)
     obj = storage.get('State', state_id)
     if not obj:
         abort(404)
