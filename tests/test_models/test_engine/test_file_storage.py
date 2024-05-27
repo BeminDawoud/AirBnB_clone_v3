@@ -19,8 +19,6 @@ import os
 import pep8
 import unittest
 FileStorage = file_storage.FileStorage
-storage = models.storage
-storage_type = os.environ.get('HBNB_TYPE_STORAGE')
 classes = {"Amenity": Amenity, "BaseModel": BaseModel, "City": City,
            "Place": Place, "Review": Review, "State": State, "User": User}
 
@@ -116,104 +114,21 @@ class TestFileStorage(unittest.TestCase):
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
 
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_fs_get(self):
+        """Test file storage. get function"""
+        fs_state1 = State(name='Californiaa')
+        models.storage.new(fs_state1)
+        models.storage.save()
+        key = models.storage.get(State, fs_state1.id)
+        self.assertEqual(key.id, fs_state1.id)
 
-@unittest.skipIf(storage_type == 'db', 'skip if environ is not db')
-class TestStorageGet(unittest.TestCase):
-    """
-    Testing `get()` method in DBStorage
-    """
-
-    @classmethod
-    def setUpClass(cls):
-        """
-        setup tests for class
-        """
-        print('\n\n.................................')
-        print('...... Testing Get() Method ......')
-        print('.......... Place  Class ..........')
-        print('.................................\n\n')
-
-    def setUp(self):
-        """
-        setup method
-        """
-        self.state = models.state.State(name="Florida")
-        self.state.save()
-
-    def test_get_method_obj(self):
-        """
-        testing get() method
-        :return: True if pass, False if not pass
-        """
-
-        print(self.state.id)
-        result = storage.get(cls="State", id=self.state.id)
-
-        self.assertIsInstance(result, models.state.State)
-
-    def test_get_method_return(self):
-        """
-        testing get() method for id match
-        :return: True if pass, false if not pass
-        """
-        result = storage.get(cls="State", id=str(self.state.id))
-
-        self.assertEqual(self.state.id, result.id)
-
-
-@unittest.skipIf(storage_type == 'db', 'skip if environ is not db')
-class TestStorageCount(unittest.TestCase):
-    """
-    tests count() method in DBStorage
-    """
-
-    @classmethod
-    def setUpClass(cls):
-        """
-        setup tests for class
-        """
-        print('\n\n.................................')
-        print('...... Testing Get() Method ......')
-        print('.......... Place  Class ..........')
-        print('.................................\n\n')
-
-    def setup(self):
-        """
-        setup method
-        """
-        models.state.State()
-        models.state.State()
-        models.state.State()
-        models.state.State()
-        models.state.State()
-        models.state.State()
-        models.state.State()
-
-    def test_count_all(self):
-        """
-        testing counting all instances
-        :return: True if pass, false if not pass
-        """
-        result = storage.count()
-
-        self.assertEqual(len(storage.all()), result)
-
-    def test_count_state(self):
-        """
-        testing counting state instances
-        :return: True if pass, false if not pass
-        """
-        result = storage.count(cls="State")
-
-        self.assertEqual(len(storage.all("State")), result)
-
-    def test_count_city(self):
-        """
-        testing counting non existent
-        :return: True if pass, false if not pass
-        """
-        result = storage.count(cls="City")
-
-        self.assertEqual(
-            int(0 if len(storage.all("City")) is None else
-                len(storage.all("City"))), result)
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_fs_count(self):
+        """Test file storage. count function"""
+        n1 = models.storage.count(State)
+        fs_state2 = State(name='Alaskaa')
+        models.storage.new(fs_state2)
+        models.storage.save()
+        n2 = models.storage.count(State)
+        self.assertEqual(n1 + 1, n2)
