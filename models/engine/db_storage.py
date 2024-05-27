@@ -25,7 +25,7 @@ class DBStorage:
     __engine = None
     __session = None
 
-    def _init_(self):
+    def __init__(self):
         """Instantiate a DBStorage object"""
         HBNB_MYSQL_USER = getenv('HBNB_MYSQL_USER')
         HBNB_MYSQL_PWD = getenv('HBNB_MYSQL_PWD')
@@ -40,28 +40,6 @@ class DBStorage:
         if HBNB_ENV == "test":
             Base.metadata.drop_all(self.__engine)
 
-    def get(self, cls, id):
-        """
-        fetches specific object :
-        param cls: class
-        param id: string representing the object ID
-        return: the object based on the class and its ID, or None if not found
-        """
-        all_class = self.all(cls)
-
-        for obj in all_class.values():
-            if id == str(obj.id):
-                return obj
-
-        return None
-
-    def count(self, cls=None):
-        """
-        count of how many instances of a class:
-
-        """
-        return len(self.all(cls))
-
     def all(self, cls=None):
         """query on the current database session"""
         new_dict = {}
@@ -69,7 +47,7 @@ class DBStorage:
             if cls is None or cls is classes[clss] or cls is clss:
                 objs = self.__session.query(classes[clss]).all()
                 for obj in objs:
-                    key = obj._class.name_ + '.' + obj.id
+                    key = obj.__class__.__name__ + '.' + obj.id
                     new_dict[key] = obj
         return (new_dict)
 
@@ -92,6 +70,20 @@ class DBStorage:
         sess_factory = sessionmaker(bind=self.__engine, expire_on_commit=False)
         Session = scoped_session(sess_factory)
         self.__session = Session
+
+    def get(self, cls, id):
+        """method to retrieve one object"""
+        all_class = self.all(cls)
+
+        for obj in all_class.values():
+            if id == str(obj.id):
+                return obj
+
+        return None
+
+    def count(self, cls=None):
+        """method to count the number of objects in storage"""
+        return len(self.all(cls))
 
     def close(self):
         """call remove() method on the private session attribute"""
