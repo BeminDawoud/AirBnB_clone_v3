@@ -57,16 +57,20 @@ def post_state():
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
 def put_state(state_id=None):
     ''' adds a new State object: POST '''
-    if not state_id:
+    item = storage.get(State, state_id)
+    if state_id and item:
+        try:
+            item_info = request.get_json()
+        except Exception:
+            abort(400, "Not a JSON")
+        if item_info:
+            for k, v in item_info.items():
+                if (k != "id" and k != "created_at" and k != "updated_at"):
+                    setattr(item, k, v)
+
+            item.save()
+            return (jsonify(item.to_dict()))
+        else:
+            abort(400, "Not a JSON")
+    else:
         abort(404)
-    obj = storage.get('State', state_id)
-    if not obj:
-        abort(404)
-    data = request.get_json()
-    if not data:
-        abort(400, "Not a JSON")
-    for key, value in data.items():
-        if (key != "id" and key != "created_at" and key != "updated_at"):
-            setattr(obj, key, value)
-    obj.save()
-    return jsonify(obj.to_dict()), 200
