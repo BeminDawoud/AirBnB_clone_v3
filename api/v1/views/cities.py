@@ -9,7 +9,7 @@ from models.state import State
 from models.city import City
 
 
-@app_views.route('/states/<city_id>/cities', methods=['GET'],
+@app_views.route('/states/<state_id>/cities', methods=['GET'],
                  strict_slashes=False)
 def get_state_cities(state_id=None):
     ''' Retrieves the list of all cities: GET'''
@@ -35,7 +35,7 @@ def get_city(city_id=None):
             abort(404)
 
 
-@app_views.route("/states/<state_id>", methods=['DELETE'],
+@app_views.route("/cities/<city_id>", methods=['DELETE'],
                  strict_slashes=False)
 def delete_city(city_id=None):
     ''' Deletes a City object: DELETE '''
