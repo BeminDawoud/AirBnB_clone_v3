@@ -29,7 +29,7 @@ class FileStorage:
         if cls is not None:
             new_dict = {}
             for key, value in self.__objects.items():
-                if cls == value.__class__ or cls == value.__class__.__name__:
+                if cls == value._class_ or cls == value._class.name_:
                     new_dict[key] = value
             return new_dict
         return self.__objects
@@ -37,8 +37,32 @@ class FileStorage:
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
         if obj is not None:
-            key = obj.__class__.__name__ + "." + obj.id
+            key = obj._class.name_ + "." + obj.id
             self.__objects[key] = obj
+
+    def get(self, cls, id):
+        """
+        fetches specific object :
+        param cls: class
+        param id: string representing the object ID
+        return: the object based on the class and its ID, or None if not found
+        """
+        all_class = self.all(cls)
+
+        for obj in all_class.values():
+            if id == str(obj.id):
+                return obj
+
+        return None
+
+    def count(self, cls=None):
+        """
+        count of how many instances of a class:
+        param cls: class (optional)
+        Return: the number of objects in storage matching the given class.
+        If no class is passed, returns the count of all objects in storage
+        """
+        return len(self.all(cls))
 
     def save(self):
         """serializes __objects to the JSON file (path: __file_path)"""
@@ -54,30 +78,16 @@ class FileStorage:
             with open(self.__file_path, 'r') as f:
                 jo = json.load(f)
             for key in jo:
-                self.__objects[key] = classes[jo[key]["__class__"]](**jo[key])
+                self._objects[key] = classes[jo[key]["class_"]](**jo[key])
         except Exception:
             pass
 
     def delete(self, obj=None):
         """delete obj from __objects if it’s inside"""
         if obj is not None:
-            key = obj.__class__.__name__ + '.' + obj.id
+            key = obj._class.name_ + '.' + obj.id
             if key in self.__objects:
                 del self.__objects[key]
-
-    def get(self, cls, id):
-        """method to retrieve one object"""
-        all_class = self.all(cls)
-
-        for obj in all_class.values():
-            if id == str(obj.id):
-                return obj
-
-        return None
-
-    def count(self, cls=None):
-        """method to count the number of objects in storage"""
-        return len(self.all(cls))
 
     def close(self):
         """call reload() method for deserializing the JSON file to objects"""
