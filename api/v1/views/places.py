@@ -61,12 +61,12 @@ def post_place(city_id):
         abort(400, "Not a JSON")
     if item_info:
         if 'user_id' not in item_info:
-                abort(400, "Missing user_id")
+            abort(400, "Missing user_id")
         u = storage.get(User, item_info["user_id"])
         if not u:
             abort(404)
         if 'name' not in item_info:
-                abort(400, "Missing name")
+            abort(400, "Missing name")
         item = Place(**item_info)
         setattr(item, "city_id", city_id)
         item.save()
