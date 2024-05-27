@@ -70,7 +70,7 @@ def put_state(state_id=None):
         if data:
             for k, value in data.items():
                 if (k != "id" and k != "created_at" and k != "updated_at"):
-                    setattr(obj, key, value)
+                    setattr(obj, k, value)
 
             obj.save()
             return (jsonify(obj.to_dict()))
