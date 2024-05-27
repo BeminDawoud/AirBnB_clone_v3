@@ -46,14 +46,12 @@ def post_state():
     data = request.get_json()
     if not data:
         abort(400, "Not a JSON")
-    if "name" not in data:
+    state_name = data.get("name", None)
+    if not state_name:
         abort(400, "Missing name")
-    try:
-        new_state = State(**data)
-        new_state.save()
-        return jsonify(new_state.to_dict()), 201
-    except Exception:
-        abort(400, "Not a JSON")
+    new_state = State(**data)
+    new_state.save()
+    return jsonify(new_state.to_dict()), 201
 
 
 @app_views.route('/states/<state_id>', methods=['PUT'], strict_slashes=False)
