@@ -58,6 +58,7 @@ class DBStorage:
     def count(self, cls=None):
         """
         count of how many instances of a class:
+
         """
         return len(self.all(cls))
 
