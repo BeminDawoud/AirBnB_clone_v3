@@ -27,7 +27,7 @@ def get_place_amenities(place_id=None):
         abort(404)
 
 
-@app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['GET'],
+@app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['DELETE'],
                  strict_slashes=False)
 def delete_place_amenity(place_id=None, amenity_id=None):
     ''' Deletes a Amenity object to a Place: DELETE'''
