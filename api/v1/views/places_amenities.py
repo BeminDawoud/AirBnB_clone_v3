@@ -35,8 +35,7 @@ def delete_place_amenity(place_id=None, amenity_id=None):
         place_object = storage.get("Place", place_id)
         if not plcae_object:
             abort(404)
-        amenity_object = storage.get("Amenity", amenity_id)
-        if not amenity_object:
+        if not storage.get("Amenity", amenity_id):
             abort(404)
         for amenity in place_object.amenities:
             if amenity_id == amenity.id:
