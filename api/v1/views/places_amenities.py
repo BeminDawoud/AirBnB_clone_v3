@@ -32,6 +32,7 @@ def get_place_amenities(place_id=None):
 def delete_place_amenity(place_id=None, amenity_id=None):
     ''' Deletes a Amenity object to a Place: DELETE'''
     try:
+        found = False
         place_object = storage.get("Place", place_id)
         if not plcae_object:
             abort(404)
@@ -39,10 +40,14 @@ def delete_place_amenity(place_id=None, amenity_id=None):
             abort(404)
         for amenity in place_object.amenities:
             if amenity_id == amenity.id:
+                found = True
                 if storage_type == "db":
                     place_object.amenities.remove(amenity)
                 else:
                     place_object.amenity_ids.remove(amenity_id)
-        return jsonify({})
+        if found:
+            return jsonify({})
+        else:
+            abort(404)
     except Exception:
         abort(404)
