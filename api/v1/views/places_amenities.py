@@ -10,7 +10,9 @@ from models.amenity import Amenity
 from os import getenv
 storage_type = getenv("HBNB_TYPE_STORAGE")
 
-@app_views.route('/places/<place_id>/amenities', methods=['GET'], strict_slashes=False)
+
+@app_views.route('/places/<place_id>/amenities', methods=['GET'],
+                 strict_slashes=False)
 def get_place_amenities(place_id=None):
     ''' get the list of place amenities'''
     try:
@@ -23,4 +25,3 @@ def get_place_amenities(place_id=None):
         return jsonify(amenities_list)
     except Exception:
         abort(404)
-
