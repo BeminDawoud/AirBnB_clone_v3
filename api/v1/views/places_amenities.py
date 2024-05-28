@@ -45,6 +45,7 @@ def delete_place_amenity(place_id=None, amenity_id=None):
                     place_object.amenities.remove(amenity)
                 else:
                     place_object.amenity_ids.remove(amenity_id)
+                place_object.save()
         if found:
             return jsonify({})
         else:
