@@ -20,7 +20,7 @@ def get_place_amenities(place_id=None):
         if not obj:
             abort(404)
         amenities_list = []
-        for amenity in obj:
+        for amenity in obj.amenities:
             amenities_list.append(amenity.to_dect())
         return jsonify(amenities_list)
     except Exception:
@@ -32,18 +32,18 @@ def get_place_amenities(place_id=None):
 def delete_place_amenity(place_id=None, amenity_id=None):
     ''' Deletes a Amenity object to a Place: DELETE'''
     try:
-        plcae_object = storage.get("Place", place_id)
+        place_object = storage.get("Place", place_id)
         if not plcae_object:
             abort(404)
         amenity_object = storage.get("Place", place_id)
         if not amenity_object:
             abort(404)
-        for amenity in plcae_object.amenities:
+        for amenity in place_object.amenities:
             if amenity_id == amenity.id:
                 if storage_type == "db":
-                    plcae_object.amenities.remove(amenity)
+                    place_object.amenities.remove(amenity)
                 else:
-                    plcae_object.amenity_ids.remove(amenity_id)
+                    place_object.amenity_ids.remove(amenity_id)
         return jsonify({})
     except Exception:
         abort(404)
