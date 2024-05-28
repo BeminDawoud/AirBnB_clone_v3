@@ -25,3 +25,25 @@ def get_place_amenities(place_id=None):
         return jsonify(amenities_list)
     except Exception:
         abort(404)
+
+
+@app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['GET'],
+                 strict_slashes=False)
+def delete_place_amenity(place_id=None, amenity_id=None):
+    ''' Deletes a Amenity object to a Place: DELETE'''
+    try:
+        plcae_object = storage.get("Place", place_id)
+        if not plcae_object:
+            abort(404)
+        amenity_object = storage.get("Place", place_id)
+        if not amenity_object:
+            abort(404)
+        for amenity in plcae_object.amenities:
+            if amenity_id == amenity.id:
+                if storage_type == "db":
+                    plcae_object.amenities.remove(amenity)
+                else:
+                    plcae_object.amenity_ids.remove(amenity_id)
+        return jsonify({})
+    except Exception:
+        abort(404)
