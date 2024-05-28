@@ -34,7 +34,7 @@ def delete_place_amenity(place_id=None, amenity_id=None):
     try:
         found = False
         place_object = storage.get("Place", place_id)
-        if not plcae_object:
+        if not place_object:
             abort(404)
         if not storage.get("Amenity", amenity_id):
             abort(404)
